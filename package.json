@@ -1,0 +1,30 @@
+{
+  "name": "layout",
+  "version": "1.0.0",
+  "description": "layout anything",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dist": "babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lanyuechen/layout.git"
+  },
+  "keywords": [
+    "layout"
+  ],
+  "author": "lanyuechen",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/lanyuechen/layout/issues"
+  },
+  "homepage": "https://github.com/lanyuechen/layout#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-plugin-transform-es2015-modules-umd": "^6.24.1",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-stage-0": "^6.24.1"
+  }
+}
