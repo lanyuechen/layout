@@ -1,5 +1,6 @@
-import 'babel-polyfill';
+import Container, { C } from './lib/container/index';
 
-import { hello } from './helloworld';
-
-hello('world');
+export {
+  Container,
+  C
+}
