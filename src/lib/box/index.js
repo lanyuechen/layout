@@ -1,24 +1,27 @@
 class Box {
   constructor(props) {
     this.body = document.createElement('div');
-    this.box = document.createElement('div');
-    this.box.setAttribute('id', props.id);
-
     Object.assign(this.body.style, {
-      width: '50%',
-      height: '100%',
       float: 'left',
       overflow: 'hidden',
       pointerEvents: 'none',
       background: 'transparent',
-      padding: '5px',
+      padding: '3px',
       boxSizing: 'border-box'
     });
+
+    this.size(props);
+
+    this.box = document.createElement('div');
+    this.box.setAttribute('id', props.id);
+
     Object.assign(this.box.style, {
       width: '100%',
       height: '100%',
+      position: 'relative',
       pointerEvents: 'all'
     });
+
     this.body.appendChild(this.box);
   }
 
@@ -30,8 +33,16 @@ class Box {
     }
   }
 
-  style(style) {
-    Object.assign(this.box.style, style);
+  size({x, y, width, height, layout}) {
+
+    //默认绝对布局 absolute
+    Object.assign(this.body.style, {
+      position: 'absolute',
+      left: x + 'px',
+      top: y + 'px',
+      width: width + 'px',
+      height: height + 'px'
+    })
   }
 
   render() {
@@ -43,7 +54,7 @@ class Box {
   }
 
   removeEventListener(...props) {
-    this.box.addEventListener(...props);
+    this.box.removeEventListener(...props);
   }
 }
 

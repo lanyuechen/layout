@@ -1,23 +1,27 @@
 import { C } from '../src';
+import { colorRnd } from 'lib/common';
 
 const panel = document.getElementById('app');
 
 const c = C({
-  props: {
-    id: '0'
-  },
+  x: 0,
+  y: 0,
+  width: 500,
+  height: 500,
   child: [
     C({
-      props: {
-        id: '1'
-      },
-      child: '1'
+      x: 0,
+      y: 0,
+      width: 250,
+      height: 500,
+      child: `<div style="width: 100%; height: 100%; background: ${colorRnd()}">test1</div>`
     }),
     C({
-      props: {
-        id: '2'
-      },
-      child: '2'
+      x: 250,
+      y: 0,
+      width: 250,
+      height: 500,
+      child: `<div style="width: 100%; height: 100%; background: ${colorRnd()}">test2</div>`
     })
   ]
 });
