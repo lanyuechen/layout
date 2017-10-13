@@ -19,7 +19,8 @@ class Box {
       width: '100%',
       height: '100%',
       position: 'relative',
-      pointerEvents: 'all'
+      pointerEvents: 'all',
+      userSelect: 'none'
     });
 
     this.body.appendChild(this.box);
@@ -33,7 +34,7 @@ class Box {
     }
   }
 
-  size({x, y, width, height, layout}) {
+  size = ({x, y, width, height, layout}) => {
 
     //默认绝对布局 absolute
     Object.assign(this.body.style, {
@@ -43,7 +44,7 @@ class Box {
       width: width + 'px',
       height: height + 'px'
     })
-  }
+  };
 
   render() {
     return this.body;

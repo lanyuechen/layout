@@ -1,4 +1,4 @@
-import { uuid } from 'lib/common';
+import { uuid, collision, animate } from 'lib/common';
 import Box from 'lib/box/index';
 
 const PADDING = 10;
@@ -8,6 +8,7 @@ class Container {
     const { id, x, y, width, height, layout, child } = config;
 
     //位置尺寸属性
+    this.id = id || uuid();
     this.x = x;
     this.y = y;
     this.width = width;
@@ -15,7 +16,7 @@ class Container {
     this.layout = layout;
 
     this.body = new Box({
-      id: id || uuid(),
+      id: this.id,
       x, y, width, height, layout
     });
 
@@ -41,9 +42,18 @@ class Container {
     dom.style.cursor = mouseType || 'default';
   }
 
+  static mouseArea(x, y) {
+    return {
+      x: x - PADDING,
+      y: y - PADDING,
+      width: x + PADDING,
+      height: y + PADDING
+    }
+  }
+
   init() {
     this.body.addEventListener('mousedown', this.handleMouseDown);
-    this.body.addEventListener('mousemove', this.handleMouseMove);
+    window.addEventListener('mousemove', this.handleMouseMove);
     window.addEventListener('mouseup', this.handleMouseUp);
   }
 
@@ -60,6 +70,19 @@ class Container {
     return this.body.render();
   }
 
+  result() {
+    const { id, x, y, width, height, layout, child } = this;
+    return {
+      id, x, y, width, height, layout,
+      child: child.map(d => {
+        if (d instanceof Container) {
+          return d.result();
+        }
+        return d;
+      })
+    }
+  }
+
   handleMouseDown = (e) => {
     e.stopPropagation();
 
@@ -69,6 +92,7 @@ class Container {
 
     const { x, y, width, height } = this;
 
+    this.mouseType = Container.getMouseType(e);
     this.mouseDown = true;
     this.sp = {
       x, y, width, height,
@@ -76,20 +100,21 @@ class Container {
       dy: e.clientY
     };
 
-    this.body.addEventListener('mousemove', this.handleMouseMove);
+    //子容器,用来在mouse move中进行碰撞检测,判断鼠标缩放类型.
+    this.childObj = this.child.filter(d => d instanceof Container).map(d => d.result());
   };
 
   handleMouseUp = (e) => {
     this.mouseDown = false;
+    this.mouseType = null;
+    this.childObj = null;
   };
 
   handleMouseMove = e => {
     e.stopPropagation();
 
-    const mouseType = Container.getMouseType(e);
     if (!this.mouseDown) {  //鼠标未按下
-      console.log(mouseType, e.target.getAttribute('id'));
-      Container.setCursor(document.body, mouseType);
+      Container.setCursor(document.body, Container.getMouseType(e));
       return;
     }
 
@@ -97,38 +122,33 @@ class Container {
     const deltaX = e.clientX - dx;
     const deltaY = e.clientY - dy;
 
-    switch(mouseType) {
+    switch(this.mouseType) {
       case 'nw-resize':
-        this.x = x - deltaX;
-        this.y = y - deltaY;
-        this.width = width + deltaX;
-        this.height = height + deltaY;
+        this.x = x + deltaX;
+        this.y = y + deltaY;
+        this.width = width - deltaX;
+        this.height = height - deltaY;
         break;
       case 'w-resize':
-        this.x = x - deltaX;
-        this.width = width + deltaX;
+        this.x = x + deltaX;
+        this.width = width - deltaX;
         break;
       case 'sw-resize':
-        this.x = x - deltaX;
-        this.width = width + deltaX;
+        this.x = x + deltaX;
+        this.width = width - deltaX;
         this.height = height + deltaY;
         break;
       case 'n-resize':
-        this.y = y - deltaY;
-        this.height = height + deltaY;
-        break;
-      case 'move':
-        console.log('[center]');
-        this.x = x - deltaX;
-        this.y = y - deltaY;
+        this.y = y + deltaY;
+        this.height = height - deltaY;
         break;
       case 's-resize':
         this.height = height + deltaY;
         break;
       case 'ne-resize':
-        this.y = y - deltaY;
+        this.y = y + deltaY;
         this.width = width + deltaX;
-        this.height = height + deltaY;
+        this.height = height - deltaY;
         break;
       case 'e-resize':
         this.width = width + deltaX;
@@ -137,9 +157,13 @@ class Container {
         this.width = width + deltaX;
         this.height = height + deltaY;
         break;
+      case 'move':
+        const match = this.childObj.filter(d => collision(d, Container.mouseArea(e.offsetX, e.offsetY)));
+
+        return;
     }
 
-    this.body.size(this);
+    animate(this.body.size, this);
   };
 }
 
