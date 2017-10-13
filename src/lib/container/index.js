@@ -122,48 +122,52 @@ class Container {
     const deltaX = e.clientX - dx;
     const deltaY = e.clientY - dy;
 
-    switch(this.mouseType) {
-      case 'nw-resize':
-        this.x = x + deltaX;
-        this.y = y + deltaY;
-        this.width = width - deltaX;
-        this.height = height - deltaY;
-        break;
-      case 'w-resize':
-        this.x = x + deltaX;
-        this.width = width - deltaX;
-        break;
-      case 'sw-resize':
-        this.x = x + deltaX;
-        this.width = width - deltaX;
-        this.height = height + deltaY;
-        break;
-      case 'n-resize':
-        this.y = y + deltaY;
-        this.height = height - deltaY;
-        break;
-      case 's-resize':
-        this.height = height + deltaY;
-        break;
-      case 'ne-resize':
-        this.y = y + deltaY;
-        this.width = width + deltaX;
-        this.height = height - deltaY;
-        break;
-      case 'e-resize':
-        this.width = width + deltaX;
-        break;
-      case 'se-resize':
-        this.width = width + deltaX;
-        this.height = height + deltaY;
-        break;
-      case 'move':
-        const match = this.childObj.filter(d => collision(d, Container.mouseArea(e.offsetX, e.offsetY)));
-
-        return;
+    if (e.shiftKey) {
+      this.x = x + deltaX;
+      this.y = y + deltaY;
+    } else {
+      switch(this.mouseType) {
+        case 'nw-resize':
+          this.x = x + deltaX;
+          this.y = y + deltaY;
+          this.width = width - deltaX;
+          this.height = height - deltaY;
+          break;
+        case 'w-resize':
+          this.x = x + deltaX;
+          this.width = width - deltaX;
+          break;
+        case 'sw-resize':
+          this.x = x + deltaX;
+          this.width = width - deltaX;
+          this.height = height + deltaY;
+          break;
+        case 'n-resize':
+          this.y = y + deltaY;
+          this.height = height - deltaY;
+          break;
+        case 's-resize':
+          this.height = height + deltaY;
+          break;
+        case 'ne-resize':
+          this.y = y + deltaY;
+          this.width = width + deltaX;
+          this.height = height - deltaY;
+          break;
+        case 'e-resize':
+          this.width = width + deltaX;
+          break;
+        case 'se-resize':
+          this.width = width + deltaX;
+          this.height = height + deltaY;
+          break;
+        case 'move':
+          const match = this.childObj.filter(d => collision(d, Container.mouseArea(e.offsetX, e.offsetY)));
+          return;
+      }
     }
 
-    animate(this.body.size, this);
+    animate(this.body.setProps, this);
   };
 }
 

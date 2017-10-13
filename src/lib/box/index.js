@@ -10,7 +10,7 @@ class Box {
       boxSizing: 'border-box'
     });
 
-    this.size(props);
+    this.setProps(props);
 
     this.box = document.createElement('div');
     this.box.setAttribute('id', props.id);
@@ -19,8 +19,7 @@ class Box {
       width: '100%',
       height: '100%',
       position: 'relative',
-      pointerEvents: 'all',
-      userSelect: 'none'
+      pointerEvents: 'all'
     });
 
     this.body.appendChild(this.box);
@@ -34,7 +33,7 @@ class Box {
     }
   }
 
-  size = ({x, y, width, height, layout}) => {
+  setProps = ({x, y, width, height, layout}) => {
 
     //默认绝对布局 absolute
     Object.assign(this.body.style, {
